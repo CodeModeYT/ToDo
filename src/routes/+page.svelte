@@ -1,24 +1,31 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import Textfield from '@smui/textfield';
+	// import CharacterCounter from '@smui/textfield/character-counter';
+	import { mdiPlus } from '@mdi/js';
+	import Fab, { Icon } from '@smui/fab';
+	import { useStorage } from '$lib/store';
+	import type { ITask } from '$lib/taskType';
 
-	let valueC = '';
+	let usrinput = '';
 
-	let tasks = writable<string[]>([]);
+	const tasks = useStorage<ITask[]>('todos', []);
+	$: showingtasks = $tasks;
 
 	function addTask() {
-		const input = (document.getElementById('taskname') as HTMLInputElement).value.trim();
+		const input = usrinput.trim();
 		if (input !== '') {
-			tasks.update((currentTasks: any) => [...currentTasks, input]);
-			(document.getElementById('taskname') as HTMLInputElement).value = '';
+			let newTask: ITask = {
+				task: input
+			};
+			$tasks = [...$tasks, newTask];
+			usrinput = '';
 			isTasksEmpty();
-			let string = JSON.stringify($tasks);
-			localStorage.setItem('todos', string);
 		}
 	}
 
-	function handleEnterKey(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
+	function handleEnterKey(event: KeyboardEvent | CustomEvent) {
+		const keyboardEvent = event as KeyboardEvent;
+		if (keyboardEvent.key === 'Enter') {
 			addTask();
 		}
 	}
@@ -29,19 +36,36 @@
 			(document.getElementById('task-placeholder') as HTMLInputElement).style.display = 'none';
 		}
 	}
+
+	function handleEnterKeyOnTextfield(event: KeyboardEvent | CustomEvent) {
+		const keyboardEvent = event as KeyboardEvent;
+		if (keyboardEvent.key === 'Enter') {
+			addTask();
+		}
+	}
 </script>
 
-<input
-	type="text"
-	id="taskname"
-	placeholder="Enter the name of the task..."
-	maxlength="100"
-	on:keydown={handleEnterKey}
-/>
-<button id="input_button" on:click={addTask}>Add task!</button>
-<p id="task-placeholder">Start writing your first tasks...</p>
-<div class="task">
-	{#each $tasks as task, i}
+<div class="inputdiv">
+	<Textfield
+		variant="outlined"
+		bind:value={usrinput}
+		label="Enter the name of the task..."
+		input$maxlength={100}
+		on:keydown={handleEnterKeyOnTextfield}
+		class="inputfield"
+	>
+		<!-- <CharacterCounter class="ccounter" slot="helper">0 / 100</CharacterCounter> -->
+	</Textfield>
+	<button id="input_button" class="button" on:click={addTask}>
+		<Icon tag="svg" viewBox="0 0 24 24" class="icon">
+			<path fill="#FD4864" d={mdiPlus} />
+		</Icon>
+	</button>
+</div>
+
+<div class="active-tasks">
+	<p id="task-placeholder">Start writing your first tasks...</p>
+	{#each showingtasks as task}
 		<p>{task}</p>
 	{/each}
 </div>

@@ -1,0 +1,30 @@
+body {
+    font-family: Roboto;
+}
+
+.inputdiv {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.inputfield {
+    width: 100%;
+}
+
+.icon {
+    right: 10px;
+    width: 50px;
+    height: auto;
+    fill: #FD4864;
+    cursor: pointer;
+}
+
+.button {
+    border: none;
+    background-color: transparent
+}
+
+.active-tasks {
+    margin-left: 1%;
+}
