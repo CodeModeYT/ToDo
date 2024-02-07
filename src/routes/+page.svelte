@@ -3,6 +3,7 @@
 	import IconButton from '@smui/icon-button';
 	// import CharacterCounter from '@smui/textfield/character-counter';
 	import {
+		mdiContentSaveOutline,
 		mdiDelete,
 		mdiFormatColorFill,
 		mdiPencilOutline,
@@ -31,7 +32,6 @@
 				id: generateRandomID(),
 				task: input,
 				completed: false,
-
 				contenteditable: false
 			};
 			$tasks = [...$tasks, newTask];
@@ -93,6 +93,22 @@
 	function editTask(id: string) {
 		const text: any = document.getElementById(id);
 		text.contentEditable = true;
+		const task = $tasks.find((task) => task.id === id);
+		if (task) {
+			task.contenteditable = true;
+			showingtasks = showingtasks;
+		}
+	}
+
+	function saveTask(id: string) {
+		const text: any = document.getElementById(id);
+		text.contentEditable = false;
+		const taskIndex = $tasks.findIndex((task) => task.id === id);
+		if (taskIndex !== -1) {
+			$tasks[taskIndex].contenteditable = false;
+			$tasks[taskIndex].task = text.textContent;
+			$tasks = [...$tasks]; // Reassign $tasks to trigger reactivity
+		}
 	}
 </script>
 
@@ -123,11 +139,20 @@
 					bind:checked={task.completed}
 				/>
 				<p id={task.id} class="taskname">{task.task}</p>
-				<IconButton class="deletebutton" on:click={() => editTask(task.id)}>
-					<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
-						<path fill="#FD4864" d={mdiPencilOutline} />
-					</Icon>
-				</IconButton>
+				{#if task.contenteditable === false}
+					<IconButton class="deletebutton" on:click={() => editTask(task.id)}>
+						<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
+							<path fill="#FD4864" d={mdiPencilOutline} />
+						</Icon>
+					</IconButton>
+				{/if}
+				{#if task.contenteditable}
+					<IconButton class="deletebutton" on:click={() => saveTask(task.id)}>
+						<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
+							<path fill="#FD4864" d={mdiContentSaveOutline} />
+						</Icon>
+					</IconButton>
+				{/if}
 				<IconButton class="deletebutton" on:click={() => deleteTask(task.id)}>
 					<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
 						<path fill="#FD4864" d={mdiTrashCanOutline} />
