@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Textfield from '@smui/textfield';
+	import IconButton from '@smui/icon-button';
 	// import CharacterCounter from '@smui/textfield/character-counter';
-	import { mdiPlus } from '@mdi/js';
+	import { mdiDelete, mdiFormatColorFill, mdiPlus, mdiTrashCan, mdiTrashCanOutline } from '@mdi/js';
 	import Fab, { Icon } from '@smui/fab';
 	import { useStorage } from '$lib/store';
 	import type { ITask } from '$lib/taskType';
@@ -15,6 +16,7 @@
 		const input = usrinput.trim();
 		if (input !== '') {
 			let newTask: ITask = {
+				id: generateRandomID(),
 				task: input
 			};
 			$tasks = [...$tasks, newTask];
@@ -23,11 +25,16 @@
 		}
 	}
 
-	function handleEnterKey(event: KeyboardEvent | CustomEvent) {
-		const keyboardEvent = event as KeyboardEvent;
-		if (keyboardEvent.key === 'Enter') {
-			addTask();
-		}
+	function deleteTask(id: string) {
+		$tasks = $tasks.filter((task) => task.id !== id);
+	}
+
+	function generateRandomID() {
+		let id: string;
+		do {
+			id = Math.random().toString(16).slice(2).toString();
+		} while ($tasks.some((task) => task.id === id));
+		return id;
 	}
 
 	function isTasksEmpty() {
@@ -57,7 +64,7 @@
 		<!-- <CharacterCounter class="ccounter" slot="helper">0 / 100</CharacterCounter> -->
 	</Textfield>
 	<button id="input_button" class="button" on:click={addTask}>
-		<Icon tag="svg" viewBox="0 0 24 24" class="icon">
+		<Icon tag="svg" viewBox="0 0 24 24" class="plusicon">
 			<path fill="#FD4864" d={mdiPlus} />
 		</Icon>
 	</button>
@@ -66,6 +73,13 @@
 <div class="active-tasks">
 	<p id="task-placeholder">Start writing your first tasks...</p>
 	{#each showingtasks as task}
-		<p>{task}</p>
+		<div class="eachtask">
+			<p class="taskname">{task.task}</p>
+			<IconButton class="deletebutton" on:click={() => deleteTask(task.id)}>
+				<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
+					<path fill="#FD4864" d={mdiTrashCanOutline} />
+				</Icon>
+			</IconButton>
+		</div>
 	{/each}
 </div>
