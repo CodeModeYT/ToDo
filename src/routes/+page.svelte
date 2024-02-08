@@ -1,23 +1,13 @@
 <script lang="ts">
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
-	import {
-		mdiContentSaveOutline,
-		mdiDelete,
-		mdiFormatColorFill,
-		mdiPencilOutline,
-		mdiPlus,
-		mdiTableStar,
-		mdiTrashCan,
-		mdiTrashCanOutline
-	} from '@mdi/js';
-	import Fab, { Icon } from '@smui/fab';
+	import { mdiContentSaveOutline, mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+	import { Icon } from '@smui/fab';
 	import { useStorage } from '$lib/store';
 	import type { ITask } from '$lib/taskType';
 	import Checkbox from '@smui/checkbox';
 
 	let usrinput = '';
-	let checked = false;
 
 	const tasks = useStorage<ITask[]>('todos', []);
 	const donetasks = useStorage<ITask[]>('donetasks', []);
@@ -60,10 +50,15 @@
 		}
 	}
 
+	function handleEnterKeyOnEdit(id: string, event: KeyboardEvent | CustomEvent) {
+		const keyboardEvent = event as KeyboardEvent;
+
+		if (keyboardEvent.key === 'Enter') {
+			saveTask(id);
+		}
+	}
+
 	function markAsDone(id: string, event: CustomEvent<any>) {
-		let { checked } = event.target as HTMLInputElement;
-		console.log(id);
-		console.log(checked);
 		const tempTask = $tasks.find((task) => task.id === id);
 
 		if (tempTask) {
@@ -75,9 +70,6 @@
 		}
 	}
 	function markAsNotDone(id: string, event: CustomEvent<any>) {
-		let { checked } = event.target as HTMLInputElement;
-		console.log(id);
-		console.log(checked);
 		const tempTask = $donetasks.find((task) => task.id === id);
 
 		if (tempTask) {
@@ -94,6 +86,7 @@
 		text.style;
 		text.contentEditable = true;
 		text.classList.add('editabletask');
+		text.addEventListener('keydown', (event: KeyboardEvent) => handleEnterKeyOnEdit(id, event));
 		const task = $tasks.find((task) => task.id === id);
 		if (task) {
 			task.contenteditable = true;
@@ -105,6 +98,7 @@
 		const text: any = document.getElementById(id);
 		text.contentEditable = false;
 		text.classList.remove('editabletask');
+		text.removeEventListener('keydown', (event: KeyboardEvent) => handleEnterKeyOnEdit(id, event));
 		const taskIndex = $tasks.findIndex((task) => task.id === id);
 		if (taskIndex !== -1) {
 			$tasks[taskIndex].contenteditable = false;
@@ -118,44 +112,45 @@
 	<Textfield
 		variant="outlined"
 		bind:value={usrinput}
-		label="Enter the name of the task..."
+		label="Start writing some tasks down..."
 		input$maxlength={100}
 		on:keydown={handleEnterKeyOnTextfield}
 		class="inputfield"
 	></Textfield>
-	<button id="input_button" class="button" on:click={addTask}>
+	<button id="input_button" class="plusbutton" on:click={addTask}>
 		<Icon tag="svg" viewBox="0 0 24 24" class="plusicon">
 			<path fill="#FD4864" d={mdiPlus} />
 		</Icon>
 	</button>
 </div>
-<p class="task-sections">ToDo:</p>
+
+<p class="section-heading">ToDo:</p>
+
 {#if showingtasks[0]}
-	<div class="containeractive">
-		<div class="active-tasks">
+	<div class="container_active-tasks">
+		<div class="list_active-tasks">
 			{#each showingtasks as task}
-				<div class="eachtask">
+				<div class="each_active-tasks">
 					<Checkbox
-						class="checkbox"
 						on:change={(event) => markAsDone(task.id, event)}
 						bind:checked={task.completed}
 					/>
 					<p id={task.id} class="taskname">{task.task}</p>
 					{#if task.contenteditable === false}
-						<IconButton class="actionicons" on:click={() => editTask(task.id)}>
+						<IconButton class="each_actionicons" on:click={() => editTask(task.id)}>
 							<Icon tag="svg" viewBox="0 0 24 24">
 								<path fill="#FD4864" d={mdiPencilOutline} />
 							</Icon>
 						</IconButton>
 					{/if}
 					{#if task.contenteditable}
-						<IconButton class="actionicons" on:click={() => saveTask(task.id)}>
+						<IconButton class="each_actionicons" on:click={() => saveTask(task.id)}>
 							<Icon tag="svg" viewBox="0 0 24 24">
 								<path fill="#FD4864" d={mdiContentSaveOutline} />
 							</Icon>
 						</IconButton>
 					{/if}
-					<IconButton class="actionicons" on:click={() => deleteTask(task.id)}>
+					<IconButton class="each_actionicons" on:click={() => deleteTask(task.id)}>
 						<Icon tag="svg" viewBox="0 0 24 24">
 							<path fill="#FD4864" d={mdiTrashCanOutline} />
 						</Icon>
@@ -166,32 +161,37 @@
 	</div>
 {:else}
 	<div class="placeholder-container">
-		<p class="task-placeholder">Start writing some tasks...</p>
+		<p class="placeholder">No tasks yet. Create a new one above!</p>
 	</div>
 {/if}
+
 <hr class="divider" />
-<p class="task-sections">Done tasks:</p>
+<p class="section-heading">Done tasks:</p>
 
 {#if showingdonetasks[0]}
-	<div class="containerdone">
-		<div class="done-tasks">
+	<div class="container_done-tasks">
+		<div class="list_done-tasks">
 			{#each showingdonetasks as task}
-				<div class="eachdonetask">
+				<div class="each_done-tasks">
 					<Checkbox
 						class="checkbox"
 						on:change={(event) => markAsNotDone(task.id, event)}
 						bind:checked={task.completed}
 					/>
-					<p class="taskname">{task.task}</p>
-					<IconButton class="actionicons" on:click={() => deleteDoneTask(task.id)}>
-						<Icon tag="svg" viewBox="0 0 24 24">
-							<path fill="#FD4864" d={mdiTrashCanOutline} />
-						</Icon>
-					</IconButton>
+					<p class="taskname_done">{task.task}</p>
+					<div class="list_actionicons">
+						<IconButton class="actionicons_done" on:click={() => deleteDoneTask(task.id)}>
+							<Icon tag="svg" viewBox="0 0 24 24">
+								<path fill="#FD4864" d={mdiTrashCanOutline} />
+							</Icon>
+						</IconButton>
+					</div>
 				</div>
 			{/each}
 		</div>
 	</div>
 {:else}
-	<p class="task-placeholder">No tasks marked as done yet. Get to work!</p>
+	<div class="placeholder-container">
+		<p class="placeholder">No tasks marked as done yet! Get to work!</p>
+	</div>
 {/if}
