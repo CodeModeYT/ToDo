@@ -1,5 +1,10 @@
+* :global(svg:focus) {
+    outline: 0;
+}
+
 body {
     font-family: Roboto;
+    overflow: hidden;
 }
 
 .inputdiv {
@@ -14,35 +19,25 @@ body {
 }
 
 .plusicon {
-    right: 10px;
-    width: 50px;
-    height: auto;
-    fill: #FD4864;
+    height: 50px !important;
+    width: auto !important;
+}
+
+.plusbutton {
+    border: none;
+    background-color: transparent;
     cursor: pointer;
 }
 
-.button {
-    border: none;
-    background-color: transparent
+
+
+.section-heading {
+    margin: 1% 5%;
+    font-weight: bold;
+    font-size: larger;
 }
 
-.active-tasks {
-    margin: 0 10%;
-    overflow: scroll;
-    width: 100%;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.done-tasks {
-    margin: 0 10%;
-    overflow: scroll;
-    width: 100%;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.containeractive {
+.container_active-tasks {
     margin: 0 10%;
     display: flex;
     flex-direction: column;
@@ -50,7 +45,61 @@ body {
     height: 50vh;
 }
 
-.containerdone {
+.list_active-tasks {
+    margin: 0 10%;
+    overflow-y: scroll;
+    width: 100%;
+    max-height: 60vh;
+}
+
+.each_active-tasks {
+    display: flex !important;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-wrap: break-word;
+    position: relative;
+}
+
+.taskname {
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.taskname_done {
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.each_actionicons {
+    height: 25px;
+    width: auto;
+    margin-right: 0%;
+}
+
+.actionicons_done {
+    height: 25px;
+    width: auto;
+    margin-right: 0%;
+}
+
+
+.placeholder-container {
+    height: 50vh;
+}
+
+.placeholder {
+    margin: 0% 5%;
+    color: grey;
+}
+
+
+
+hr.divider {
+    margin: 1% 4%;
+    color: grey;
+}
+
+.container_done-tasks {
     margin: 0 10%;
     display: flex;
     flex-direction: column;
@@ -58,48 +107,21 @@ body {
     height: 20vh;
 }
 
-
-.actionicons {
-    height: 25px;
-    width: auto;
+.list_done-tasks {
+    margin: 0 10%;
+    overflow: scroll;
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
-.eachtask {
-    display: flex !important;
-    flex-wrap: nowrap;
-    align-items: center;
-}
-
-.eachdonetask {
+.each_done-tasks {
     display: flex !important;
     flex-wrap: nowrap;
     color: grey;
     text-decoration: line-through;
     align-items: center;
     width: 100%;
-}
-
-.taskname {
-    width: 100%;
-}
-
-.task-sections {
-    margin: 1% 5%;
-    font-weight: bold;
-    font-size: larger;
-}
-
-.task-placeholder {
-    margin: 0% 5%;
-}
-
-hr.divider {
-    margin: 1% 4%;
-    color: grey;
-}
-
-.placeholder-container {
-    height: 50vh;
 }
 
 .editabletask {
