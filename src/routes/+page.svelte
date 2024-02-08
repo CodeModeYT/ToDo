@@ -100,9 +100,15 @@
 		text.classList.remove('editabletask');
 		text.removeEventListener('keydown', (event: KeyboardEvent) => handleEnterKeyOnEdit(id, event));
 		const taskIndex = $tasks.findIndex((task) => task.id === id);
+
+		const textContent = text.textContent;
 		if (taskIndex !== -1) {
 			$tasks[taskIndex].contenteditable = false;
-			$tasks[taskIndex].task = text.textContent;
+			const element = document.getElementById(id);
+			if (element instanceof HTMLElement) {
+				element.textContent = textContent;
+			}
+			$tasks[taskIndex].task = textContent;
 			$tasks = [...$tasks];
 		}
 	}
