@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
-	// import CharacterCounter from '@smui/textfield/character-counter';
 	import {
 		mdiContentSaveOutline,
 		mdiDelete,
@@ -92,7 +91,9 @@
 
 	function editTask(id: string) {
 		const text: any = document.getElementById(id);
+		text.style;
 		text.contentEditable = true;
+		text.classList.add('editabletask');
 		const task = $tasks.find((task) => task.id === id);
 		if (task) {
 			task.contenteditable = true;
@@ -103,11 +104,12 @@
 	function saveTask(id: string) {
 		const text: any = document.getElementById(id);
 		text.contentEditable = false;
+		text.classList.remove('editabletask');
 		const taskIndex = $tasks.findIndex((task) => task.id === id);
 		if (taskIndex !== -1) {
 			$tasks[taskIndex].contenteditable = false;
 			$tasks[taskIndex].task = text.textContent;
-			$tasks = [...$tasks]; // Reassign $tasks to trigger reactivity
+			$tasks = [...$tasks];
 		}
 	}
 </script>
@@ -120,71 +122,76 @@
 		input$maxlength={100}
 		on:keydown={handleEnterKeyOnTextfield}
 		class="inputfield"
-	>
-		<!-- <CharacterCounter class="ccounter" slot="helper">0 / 100</CharacterCounter> -->
-	</Textfield>
+	></Textfield>
 	<button id="input_button" class="button" on:click={addTask}>
 		<Icon tag="svg" viewBox="0 0 24 24" class="plusicon">
 			<path fill="#FD4864" d={mdiPlus} />
 		</Icon>
 	</button>
 </div>
+<p class="task-sections">ToDo:</p>
 {#if showingtasks[0]}
-	<div class="active-tasks">
-		{#each showingtasks as task}
-			<div class="eachtask">
-				<Checkbox
-					class="checkbox"
-					on:change={(event) => markAsDone(task.id, event)}
-					bind:checked={task.completed}
-				/>
-				<p id={task.id} class="taskname">{task.task}</p>
-				{#if task.contenteditable === false}
-					<IconButton class="deletebutton" on:click={() => editTask(task.id)}>
-						<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
-							<path fill="#FD4864" d={mdiPencilOutline} />
+	<div class="containeractive">
+		<div class="active-tasks">
+			{#each showingtasks as task}
+				<div class="eachtask">
+					<Checkbox
+						class="checkbox"
+						on:change={(event) => markAsDone(task.id, event)}
+						bind:checked={task.completed}
+					/>
+					<p id={task.id} class="taskname">{task.task}</p>
+					{#if task.contenteditable === false}
+						<IconButton class="actionicons" on:click={() => editTask(task.id)}>
+							<Icon tag="svg" viewBox="0 0 24 24">
+								<path fill="#FD4864" d={mdiPencilOutline} />
+							</Icon>
+						</IconButton>
+					{/if}
+					{#if task.contenteditable}
+						<IconButton class="actionicons" on:click={() => saveTask(task.id)}>
+							<Icon tag="svg" viewBox="0 0 24 24">
+								<path fill="#FD4864" d={mdiContentSaveOutline} />
+							</Icon>
+						</IconButton>
+					{/if}
+					<IconButton class="actionicons" on:click={() => deleteTask(task.id)}>
+						<Icon tag="svg" viewBox="0 0 24 24">
+							<path fill="#FD4864" d={mdiTrashCanOutline} />
 						</Icon>
 					</IconButton>
-				{/if}
-				{#if task.contenteditable}
-					<IconButton class="deletebutton" on:click={() => saveTask(task.id)}>
-						<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
-							<path fill="#FD4864" d={mdiContentSaveOutline} />
-						</Icon>
-					</IconButton>
-				{/if}
-				<IconButton class="deletebutton" on:click={() => deleteTask(task.id)}>
-					<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
-						<path fill="#FD4864" d={mdiTrashCanOutline} />
-					</Icon>
-				</IconButton>
-			</div>
-		{/each}
+				</div>
+			{/each}
+		</div>
 	</div>
 {:else}
-	<p id="task-placeholder">Start writing some tasks...</p>
+	<div class="placeholder-container">
+		<p class="task-placeholder">Start writing some tasks...</p>
+	</div>
 {/if}
-<p>Done tasks:</p>
+<hr class="divider" />
+<p class="task-sections">Done tasks:</p>
 
 {#if showingdonetasks[0]}
-	<div class="active-tasks">
-		{#each showingdonetasks as task}
-			<div class="eachtask">
-				<Checkbox
-					class="checkbox"
-					on:change={(event) => markAsNotDone(task.id, event)}
-					bind:checked={task.completed}
-				/>
-				<p class="taskname">{task.task}</p>
-
-				<IconButton class="deletebutton" on:click={() => deleteDoneTask(task.id)}>
-					<Icon tag="svg" viewBox="0 0 24 24" class="deleteicon">
-						<path fill="#FD4864" d={mdiTrashCanOutline} />
-					</Icon>
-				</IconButton>
-			</div>
-		{/each}
+	<div class="containerdone">
+		<div class="done-tasks">
+			{#each showingdonetasks as task}
+				<div class="eachdonetask">
+					<Checkbox
+						class="checkbox"
+						on:change={(event) => markAsNotDone(task.id, event)}
+						bind:checked={task.completed}
+					/>
+					<p class="taskname">{task.task}</p>
+					<IconButton class="actionicons" on:click={() => deleteDoneTask(task.id)}>
+						<Icon tag="svg" viewBox="0 0 24 24">
+							<path fill="#FD4864" d={mdiTrashCanOutline} />
+						</Icon>
+					</IconButton>
+				</div>
+			{/each}
+		</div>
 	</div>
 {:else}
-	<p id="task-placeholder">No tasks marked as done yet. Get to work!</p>
+	<p class="task-placeholder">No tasks marked as done yet. Get to work!</p>
 {/if}
