@@ -5,6 +5,7 @@
 body {
     font-family: Roboto;
     overflow: hidden;
+    caret-color: white !important;
 }
 
 .inputdiv {
@@ -14,9 +15,7 @@ body {
     margin: 2% 20%;
 }
 
-.inputfield {
-    width: 100%;
-}
+
 
 .plusicon {
     height: 50px !important;
@@ -47,7 +46,7 @@ body {
 
 .list_active-tasks {
     margin: 0 10%;
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 100%;
     max-height: 60vh;
 }
@@ -113,6 +112,7 @@ hr.divider {
     width: 100%;
     max-height: 60vh;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .each_done-tasks {
@@ -128,4 +128,45 @@ hr.divider {
     border: 1px solid grey;
     border-radius: 5px;
     line-height: 2em;
+}
+
+
+.inputfield .mdc-notched-outline path {
+    stroke: #FD4864 !important;
+}
+
+.inputfield .mdc-notched-outline .mdc-notched-outline__leading,
+.inputfield .mdc-notched-outline .mdc-notched-outline__trailing,
+.inputfield .mdc-notched-outline .mdc-notched-outline__notch {
+    border-color: #FD4864 !important;
+}
+
+
+.inputfield .mdc-text-field::placeholder {
+    color: #FD4864 !important;
+}
+
+.inputfield .mdc-text-field {
+    color: #FD4864 !important;
+}
+
+.inputfield .mdc-line-ripple {
+    background-color: #FD4864 !important;
+}
+
+.mdc-text-field .mdc-text-field__input {
+    caret-color: white !important;
+}
+
+.inputfield {
+    width: 100%;
+    --mdc-theme-primary: #FD4864 !important;
+}
+
+.inputfield .mdc-floating-label:not(.mdc-floating-label--float-above) {
+    color: grey !important;
+}
+
+.inputfield .mdc-floating-label.mdc-floating-label--float-above {
+    color: #FD4864 !important;
 }
