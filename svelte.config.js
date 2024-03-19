@@ -10,7 +10,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		paths: {
-			base: process.env.NODE_ENV === 'production' ? '/ToDO' : '',
+			base: process.env.NODE_ENV === 'gh-pages' ? '/ToDo' : '',
 		}
 	}
 };
